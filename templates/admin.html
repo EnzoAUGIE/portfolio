@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+</head>
+
+<body>
+    <header>
+        <h1>⚙️ Admin Panel</h1>
+    </header>
+
+    <h2>Profile</h2>
+    <form action="/profile" method="post">
+        <input name="name" value="{{profile.name}}" placeholder="Name" />
+        <input name="titre" value="{{profile.titre}}" placeholder="Titre" />
+        <textarea name="bio">{{profile.bio}}</textarea>
+        <input name="email" value="{{contact.email}}" placeholder="Email" />
+        <button type="submit">Update</button>
+    </form>
+
+    <h2>Add Project</h2>
+    <form action="/projects" method="post">
+        <input name="title" placeholder="Title" />
+        <input name="description" placeholder="Description" />
+        <input name="link" placeholder="Link" />
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>Add Skill</h2>
+    <form action="/skills" method="post">
+        <input name="name" placeholder="Skill" />
+        <input name="level" placeholder="beginner / intermediate / advanced" />
+        <button type="submit">Add</button>
+    </form>
+
+    <footer>
+        <a href="/">← Retour au portfolio</a>
+        <a href="/logout">🚪 Se déconnecter</a>
+    </footer>
+</body>
+
+</html>

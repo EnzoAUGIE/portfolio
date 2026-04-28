@@ -1,0 +1,28 @@
+<html>
+
+<head>
+    <title>Login - Admin</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+</head>
+
+<body>
+    <header>
+        <h1>🔐 Admin Login</h1>
+    </header>
+
+    {% if error %}
+    <p style="color: red;">❌ Mot de passe incorrect.</p>
+    {% endif %}
+
+    <form action="/login" method="post">
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" id="password" placeholder="Entrez le mot de passe" required autofocus />
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <footer>
+        <a href="/">← Retour au portfolio</a>
+    </footer>
+</body>
+
+</html>
