@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 venv311/.DS_Store
+portfolio.db
