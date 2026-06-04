@@ -19,19 +19,48 @@
         <button type="submit">Update</button>
     </form>
 
-    <h2>Add Project</h2>
+    <h2>Skills</h2>
+    {% for skill in skills %}
+    <form action="/skills/{{skill.id}}/delete" method="post" style="display:inline">
+        <strong>{{skill.name}}</strong> — {{skill.level}}
+        <button type="submit">🗑 Supprimer</button>
+    </form>
+    <form action="/skills/{{skill.id}}/edit" method="post" style="display:inline">
+        <input name="name" value="{{skill.name}}" />
+        <input name="level" value="{{skill.level}}" />
+        <button type="submit">✏️ Modifier</button>
+    </form>
+    <br />
+    {% endfor %}
+
+    <h3>Ajouter un skill</h3>
+    <form action="/skills" method="post">
+        <input name="name" placeholder="Skill" />
+        <input name="level" placeholder="beginner / intermediate / advanced" />
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Projets</h2>
+    {% for project in projects %}
+    <form action="/projects/{{project.id}}/delete" method="post" style="display:inline">
+        <strong>{{project.title}}</strong>
+        <button type="submit">🗑 Supprimer</button>
+    </form>
+    <form action="/projects/{{project.id}}/edit" method="post" style="display:inline">
+        <input name="title" value="{{project.title}}" />
+        <input name="description" value="{{project.description}}" />
+        <input name="link" value="{{project.link}}" />
+        <button type="submit">✏️ Modifier</button>
+    </form>
+    <br />
+    {% endfor %}
+
+    <h3>Ajouter un projet</h3>
     <form action="/projects" method="post">
         <input name="title" placeholder="Title" />
         <input name="description" placeholder="Description" />
         <input name="link" placeholder="Link" />
-        <button type="submit">Add</button>
-    </form>
-
-    <h2>Add Skill</h2>
-    <form action="/skills" method="post">
-        <input name="name" placeholder="Skill" />
-        <input name="level" placeholder="beginner / intermediate / advanced" />
-        <button type="submit">Add</button>
+        <button type="submit">Ajouter</button>
     </form>
 
     <footer>

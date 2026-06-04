@@ -251,3 +251,64 @@ def delete_skill(skill_id: int):
     con.commit()
     con.close()
     return {"deleted": skill_id}
+
+
+# ── Supprimer / Modifier via formulaire HTML ──────────────────────
+
+
+@app.post("/skills/{skill_id}/delete")
+def delete_skill_form(request: Request, skill_id: int):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute("DELETE FROM skills WHERE id=?", (skill_id,))
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/skills/{skill_id}/edit")
+def edit_skill_form(
+    request: Request,
+    skill_id: int,
+    name: Annotated[str, Form()],
+    level: Annotated[str, Form()],
+):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute("UPDATE skills SET name=?, level=? WHERE id=?", (name, level, skill_id))
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/projects/{project_id}/delete")
+def delete_project_form(request: Request, project_id: int):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute("DELETE FROM projects WHERE id=?", (project_id,))
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/projects/{project_id}/edit")
+def edit_project_form(
+    request: Request,
+    project_id: int,
+    title: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    link: Annotated[str, Form()] = None,
+):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute(
+        "UPDATE projects SET title=?, description=?, link=? WHERE id=?",
+        (title, description, link, project_id),
+    )
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
