@@ -58,6 +58,16 @@ def init_db():
         )
     """)
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS contact (
+            id INTEGER PRIMARY KEY,
+            email TEXT,
+            linkedin TEXT,
+            github TEXT,
+            localisation TEXT
+        )
+    """)
+
     # Données initiales si la table profile est vide
     cur.execute("SELECT COUNT(*) FROM profile")
     if cur.fetchone()[0] == 0:
@@ -82,6 +92,15 @@ def init_db():
         cur.execute(
             "INSERT INTO skills (name, level) VALUES ('Python', 'intermediate')"
         )
+
+    # Données initiales si la table contact est vide
+    cur.execute("SELECT COUNT(*) FROM contact")
+    if cur.fetchone()[0] == 0:
+        cur.execute("""
+            INSERT INTO contact (id, email, linkedin, github, localisation)
+            VALUES (1, 'enzo.augie@epfedu.fr', 'https://fr.linkedin.com/in/enzo-augie',
+                    'https://github.com/EnzoAUGIE', 'Paris, France')
+        """)
 
     con.commit()
     con.close()
@@ -139,6 +158,7 @@ def show_portfolio(request: Request):
     profile = dict(con.execute("SELECT * FROM profile WHERE id=1").fetchone())
     projects = [dict(r) for r in con.execute("SELECT * FROM projects").fetchall()]
     skills = [dict(r) for r in con.execute("SELECT * FROM skills").fetchall()]
+    contact = dict(con.execute("SELECT * FROM contact WHERE id=1").fetchone())
     con.close()
     return templates.TemplateResponse(
         request=request,
@@ -147,6 +167,7 @@ def show_portfolio(request: Request):
             "profile": profile,
             "projects": projects,
             "skills": skills,
+            "contact": contact,
             "admin": is_admin(request),
         },
     )
@@ -160,11 +181,17 @@ def show_admin(request: Request):
     profile = dict(con.execute("SELECT * FROM profile WHERE id=1").fetchone())
     projects = [dict(r) for r in con.execute("SELECT * FROM projects").fetchall()]
     skills = [dict(r) for r in con.execute("SELECT * FROM skills").fetchall()]
+    contact = dict(con.execute("SELECT * FROM contact WHERE id=1").fetchone())
     con.close()
     return templates.TemplateResponse(
         request=request,
         name="admin.html",
-        context={"profile": profile, "projects": projects, "skills": skills},
+        context={
+            "profile": profile,
+            "projects": projects,
+            "skills": skills,
+            "contact": contact,
+        },
     )
 
 
@@ -193,6 +220,29 @@ def update_profile(
     return RedirectResponse("/admin", status_code=303)
 
 
+# ── Contact ───────────────────────────────────────────────────────
+
+
+@app.post("/contact")
+def update_contact(
+    request: Request,
+    email: Annotated[str, Form()],
+    linkedin: Annotated[str, Form()] = None,
+    github: Annotated[str, Form()] = None,
+    localisation: Annotated[str, Form()] = None,
+):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute(
+        "UPDATE contact SET email=?, linkedin=?, github=?, localisation=? WHERE id=1",
+        (email, linkedin, github, localisation),
+    )
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
 # ── Projects ──────────────────────────────────────────────────────
 
 
@@ -212,72 +262,6 @@ def create_project(
         "INSERT INTO projects (title, description, link) VALUES (?, ?, ?)",
         (title, description, link),
     )
-    con.commit()
-    con.close()
-    return RedirectResponse("/admin", status_code=303)
-
-
-@app.delete("/projects/{project_id}")
-def delete_project(project_id: int):
-    con = get_db()
-    con.execute("DELETE FROM projects WHERE id=?", (project_id,))
-    con.commit()
-    con.close()
-    return {"deleted": project_id}
-
-
-# ── Skills ────────────────────────────────────────────────────────
-
-
-@app.post("/skills")
-def create_skill(
-    request: Request, name: Annotated[str, Form()], level: Annotated[str, Form()]
-):
-    if not is_admin(request):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not admin"
-        )
-    con = get_db()
-    con.execute("INSERT INTO skills (name, level) VALUES (?, ?)", (name, level))
-    con.commit()
-    con.close()
-    return RedirectResponse("/admin", status_code=303)
-
-
-@app.delete("/skills/{skill_id}")
-def delete_skill(skill_id: int):
-    con = get_db()
-    con.execute("DELETE FROM skills WHERE id=?", (skill_id,))
-    con.commit()
-    con.close()
-    return {"deleted": skill_id}
-
-
-# ── Supprimer / Modifier via formulaire HTML ──────────────────────
-
-
-@app.post("/skills/{skill_id}/delete")
-def delete_skill_form(request: Request, skill_id: int):
-    if not is_admin(request):
-        raise HTTPException(status_code=401, detail="Not admin")
-    con = get_db()
-    con.execute("DELETE FROM skills WHERE id=?", (skill_id,))
-    con.commit()
-    con.close()
-    return RedirectResponse("/admin", status_code=303)
-
-
-@app.post("/skills/{skill_id}/edit")
-def edit_skill_form(
-    request: Request,
-    skill_id: int,
-    name: Annotated[str, Form()],
-    level: Annotated[str, Form()],
-):
-    if not is_admin(request):
-        raise HTTPException(status_code=401, detail="Not admin")
-    con = get_db()
-    con.execute("UPDATE skills SET name=?, level=? WHERE id=?", (name, level, skill_id))
     con.commit()
     con.close()
     return RedirectResponse("/admin", status_code=303)
@@ -309,6 +293,51 @@ def edit_project_form(
         "UPDATE projects SET title=?, description=?, link=? WHERE id=?",
         (title, description, link, project_id),
     )
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+# ── Skills ────────────────────────────────────────────────────────
+
+
+@app.post("/skills")
+def create_skill(
+    request: Request, name: Annotated[str, Form()], level: Annotated[str, Form()]
+):
+    if not is_admin(request):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not admin"
+        )
+    con = get_db()
+    con.execute("INSERT INTO skills (name, level) VALUES (?, ?)", (name, level))
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/skills/{skill_id}/delete")
+def delete_skill_form(request: Request, skill_id: int):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute("DELETE FROM skills WHERE id=?", (skill_id,))
+    con.commit()
+    con.close()
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/skills/{skill_id}/edit")
+def edit_skill_form(
+    request: Request,
+    skill_id: int,
+    name: Annotated[str, Form()],
+    level: Annotated[str, Form()],
+):
+    if not is_admin(request):
+        raise HTTPException(status_code=401, detail="Not admin")
+    con = get_db()
+    con.execute("UPDATE skills SET name=?, level=? WHERE id=?", (name, level, skill_id))
     con.commit()
     con.close()
     return RedirectResponse("/admin", status_code=303)

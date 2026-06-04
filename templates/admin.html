@@ -15,8 +15,16 @@
         <input name="name" value="{{profile.name}}" placeholder="Name" />
         <input name="titre" value="{{profile.titre}}" placeholder="Titre" />
         <textarea name="bio">{{profile.bio}}</textarea>
-        <input name="email" value="{{profile.email}}" placeholder="Email" />
-        <button type="submit">Update</button>
+        <button type="submit">Mettre à jour</button>
+    </form>
+
+    <h2>Contact</h2>
+    <form action="/contact" method="post">
+        <input name="email" value="{{contact.email}}" placeholder="Email" />
+        <input name="linkedin" value="{{contact.linkedin}}" placeholder="LinkedIn URL" />
+        <input name="github" value="{{contact.github}}" placeholder="GitHub URL" />
+        <input name="localisation" value="{{contact.localisation}}" placeholder="Localisation" />
+        <button type="submit">Mettre à jour</button>
     </form>
 
     <h2>Skills</h2>
