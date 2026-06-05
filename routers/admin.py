@@ -35,14 +35,14 @@ def show_admin(request: Request):
     })
 
 @router.post("/profile")
-def update_profile_route(request: Request, name: Annotated[str, Form()],
-                          titre: Annotated[str, Form()], bio: Annotated[str, Form()] = ""):
+def update_profile_route(request: Request, name: Annotated[str, Form()] = "",
+                          titre: Annotated[str, Form()] = "", bio: Annotated[str, Form()] = ""):
     user_id = require_user(request)
     update_profile(user_id, name, titre, bio, "")
     return RedirectResponse("/admin", status_code=303)
 
 @router.post("/contact")
-def update_contact_route(request: Request, email: Annotated[str, Form()],
+def update_contact_route(request: Request, email: Annotated[str, Form()] = "",
                           linkedin: Annotated[str, Form()] = None,
                           github: Annotated[str, Form()] = None,
                           localisation: Annotated[str, Form()] = None):
