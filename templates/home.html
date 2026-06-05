@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>Portfolio Generator</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <header>
+        <h1>🗂️ Portfolio Generator</h1>
+        <p>Créez et partagez votre portfolio en quelques minutes.</p>
+        {% if not logged_in %}
+        <a href="/register"><button>Créer mon portfolio</button></a>
+        <a href="/login">Se connecter</a>
+        {% else %}
+        <a href="/admin"><button>Mon portfolio</button></a>
+        <a href="/logout">Se déconnecter</a>
+        {% endif %}
+    </header>
+
+    <h2>📋 Portfolios publiés</h2>
+    {% if portfolios %}
+    <ul>
+        {% for p in portfolios %}
+        <li>
+            <a href="/portfolio/{{p.username}}"><strong>{{p.name}}</strong></a>
+            {% if p.titre %} — <em>{{p.titre}}</em>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Aucun portfolio pour l'instant. Soyez le premier !</p>
+    {% endif %}
+
+    <footer>
+        <p>Portfolio Generator — Propulsé par FastAPI</p>
+    </footer>
+</body>
+</html>

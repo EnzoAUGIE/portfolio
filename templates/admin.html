@@ -1,29 +1,29 @@
 <html>
-
 <head>
-    <title>Admin</title>
+    <title>Mon Portfolio — Admin</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
-
 <body>
     <header>
-        <h1> Admin Panel</h1>
+        <h1>⚙️ Mon Portfolio</h1>
+        <p>Connecté en tant que <strong>{{username}}</strong></p>
     </header>
 
     <h2>Profile</h2>
     <form action="/profile" method="post">
-        <input name="name" value="{{profile.name}}" placeholder="Name" />
-        <input name="titre" value="{{profile.titre}}" placeholder="Titre" />
-        <textarea name="bio">{{profile.bio}}</textarea>
+        <input name="name" value="{{profile.name or ''}}" placeholder="Nom complet" />
+        <input name="titre" value="{{profile.titre or ''}}" placeholder="Titre / Poste" />
+        <textarea name="bio">{{profile.bio or ''}}</textarea>
         <button type="submit">Mettre à jour</button>
     </form>
 
     <h2>Contact</h2>
     <form action="/contact" method="post">
-        <input name="email" value="{{contact.email}}" placeholder="Email" />
-        <input name="linkedin" value="{{contact.linkedin}}" placeholder="LinkedIn URL" />
-        <input name="github" value="{{contact.github}}" placeholder="GitHub URL" />
-        <input name="localisation" value="{{contact.localisation}}" placeholder="Localisation" />
+        <input name="email" value="{{contact.email or ''}}" placeholder="Email" />
+        <input name="linkedin" value="{{contact.linkedin or ''}}" placeholder="LinkedIn URL" />
+        <input name="github" value="{{contact.github or ''}}" placeholder="GitHub URL" />
+        <input name="localisation" value="{{contact.localisation or ''}}" placeholder="Localisation" />
         <button type="submit">Mettre à jour</button>
     </form>
 
@@ -31,14 +31,13 @@
     {% for skill in skills %}
     <form action="/skills/{{skill.id}}/delete" method="post" style="display:inline">
         <strong>{{skill.name}}</strong> — {{skill.level}}
-        <button type="submit"> Supprimer</button>
+        <button type="submit">🗑</button>
     </form>
     <form action="/skills/{{skill.id}}/edit" method="post" style="display:inline">
-        <input name="name" value="{{skill.name}}" />
-        <input name="level" value="{{skill.level}}" />
-        <button type="submit"> Modifier</button>
-    </form>
-    <br />
+        <input name="name" value="{{skill.name}}" style="width:120px" />
+        <input name="level" value="{{skill.level}}" style="width:120px" />
+        <button type="submit">✏️</button>
+    </form><br/>
     {% endfor %}
 
     <h3>Ajouter un skill</h3>
@@ -52,29 +51,28 @@
     {% for project in projects %}
     <form action="/projects/{{project.id}}/delete" method="post" style="display:inline">
         <strong>{{project.title}}</strong>
-        <button type="submit"> Supprimer</button>
+        <button type="submit">🗑</button>
     </form>
     <form action="/projects/{{project.id}}/edit" method="post" style="display:inline">
-        <input name="title" value="{{project.title}}" />
-        <input name="description" value="{{project.description}}" />
-        <input name="link" value="{{project.link}}" />
-        <button type="submit"> Modifier</button>
-    </form>
-    <br />
+        <input name="title" value="{{project.title}}" style="width:120px" />
+        <input name="description" value="{{project.description}}" style="width:150px" />
+        <input name="link" value="{{project.link}}" style="width:120px" />
+        <button type="submit">✏️</button>
+    </form><br/>
     {% endfor %}
 
     <h3>Ajouter un projet</h3>
     <form action="/projects" method="post">
-        <input name="title" placeholder="Title" />
+        <input name="title" placeholder="Titre" />
         <input name="description" placeholder="Description" />
-        <input name="link" placeholder="Link" />
+        <input name="link" placeholder="Lien" />
         <button type="submit">Ajouter</button>
     </form>
 
     <footer>
-        <a href="/"> Retour au portfolio</a>
-        <a href="/logout"> Se déconnecter</a>
+        <a href="/portfolio/{{username}}">👁 Voir mon portfolio</a>
+        <a href="/logout">🚪 Se déconnecter</a>
+        <a href="/">← Accueil</a>
     </footer>
 </body>
-
 </html>

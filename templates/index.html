@@ -1,10 +1,9 @@
 <html>
-
 <head>
-    <title>My Portfolio</title>
+    <title>{{profile.name}} — Portfolio</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
-
 <body>
     <header>
         <h1>{{profile.name}}</h1>
@@ -12,50 +11,48 @@
         <p>{{profile.bio}}</p>
     </header>
 
-    <h2> Skills</h2>
+    <h2>🧠 Skills</h2>
     <ul>
         {% for skill in skills %}
         <li>{{skill.name}} — {{skill.level}}</li>
         {% endfor %}
     </ul>
 
-    <h2> Projects</h2>
+    <h2>📁 Projets</h2>
     <ul>
         {% for project in projects %}
         <li>
             <strong>{{project.title}}</strong><br />
             {{project.description}}<br />
             {% if project.link %}
-            <a href="{{project.link}}">View project</a>
+            <a href="{{project.link}}">Voir le projet</a>
             {% endif %}
         </li>
         {% endfor %}
     </ul>
 
-    <h2> Contact</h2>
+    <h2>📬 Contact</h2>
     <ul>
         {% if contact.email %}
-        <li> <a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
+        <li>📧 <a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
         {% endif %}
         {% if contact.linkedin %}
-        <li> <a href="{{contact.linkedin}}" target="_blank">LinkedIn</a></li>
+        <li>💼 <a href="{{contact.linkedin}}" target="_blank">LinkedIn</a></li>
         {% endif %}
         {% if contact.github %}
-        <li> <a href="{{contact.github}}" target="_blank">GitHub</a></li>
+        <li>🐙 <a href="{{contact.github}}" target="_blank">GitHub</a></li>
         {% endif %}
         {% if contact.localisation %}
-        <li> {{contact.localisation}}</li>
+        <li>📍 {{contact.localisation}}</li>
         {% endif %}
     </ul>
 
     <footer>
-        {% if admin %}
-        <a href="/admin"> Admin panel</a>
-        <a href="/logout"> Se déconnecter</a>
-        {% else %}
-        <a href="/login"> Accès admin</a>
+        {% if is_owner %}
+        <a href="/admin">⚙️ Modifier mon portfolio</a>
+        <a href="/logout">🚪 Se déconnecter</a>
         {% endif %}
+        <a href="/">← Accueil</a>
     </footer>
 </body>
-
 </html>

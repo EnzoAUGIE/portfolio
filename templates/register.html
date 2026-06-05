@@ -1,28 +1,28 @@
 <html>
 <head>
-    <title>Connexion</title>
+    <title>Inscription</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
     <header>
-        <h1>🔐 Connexion</h1>
+        <h1>📝 Créer un compte</h1>
     </header>
 
     {% if error %}
-    <p style="color: red;">❌ Identifiants incorrects.</p>
+    <p style="color: red;">❌ Ce nom d'utilisateur est déjà pris.</p>
     {% endif %}
 
-    <form action="/login" method="post">
+    <form action="/register" method="post">
         <label>Nom d'utilisateur</label>
-        <input type="text" name="username" placeholder="Votre nom d'utilisateur" required autofocus />
+        <input type="text" name="username" placeholder="ex: enzo" required autofocus />
         <label>Mot de passe</label>
         <input type="password" name="password" placeholder="Votre mot de passe" required />
-        <button type="submit">Se connecter</button>
+        <button type="submit">Créer mon compte</button>
     </form>
 
     <footer>
-        <a href="/register">Pas encore de compte ? S'inscrire</a>
+        <a href="/login">Déjà un compte ? Se connecter</a>
         <a href="/">← Accueil</a>
     </footer>
 </body>

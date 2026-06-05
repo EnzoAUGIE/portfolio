@@ -1,14 +1,14 @@
 from database.db import get_db
 
-def get_contact() -> dict:
+def get_contact(user_id: int) -> dict:
     con = get_db()
-    contact = dict(con.execute("SELECT * FROM contact WHERE id=1").fetchone())
+    row = con.execute("SELECT * FROM contact WHERE user_id=?", (user_id,)).fetchone()
     con.close()
-    return contact
+    return dict(row) if row else {}
 
-def update_contact(email: str, linkedin: str = None, github: str = None, localisation: str = None):
+def update_contact(user_id: int, email: str, linkedin: str = None, github: str = None, localisation: str = None):
     con = get_db()
-    con.execute("UPDATE contact SET email=?, linkedin=?, github=?, localisation=? WHERE id=1",
-                (email, linkedin, github, localisation))
+    con.execute("UPDATE contact SET email=?, linkedin=?, github=?, localisation=? WHERE user_id=?",
+                (email, linkedin, github, localisation, user_id))
     con.commit()
     con.close()
