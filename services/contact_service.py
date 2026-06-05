@@ -1,4 +1,7 @@
+# Tier 2 — Logique métier
+# Ce fichier gère les opérations sur les informations de contact des utilisateurs
 from database.db import get_db
+
 
 def get_contact(user_id: int) -> dict:
     con = get_db()
@@ -6,9 +9,18 @@ def get_contact(user_id: int) -> dict:
     con.close()
     return dict(row) if row else {}
 
-def update_contact(user_id: int, email: str, linkedin: str = None, github: str = None, localisation: str = None):
+
+def update_contact(
+    user_id: int,
+    email: str,
+    linkedin: str = None,
+    github: str = None,
+    localisation: str = None,
+):
     con = get_db()
-    con.execute("UPDATE contact SET email=?, linkedin=?, github=?, localisation=? WHERE user_id=?",
-                (email, linkedin, github, localisation, user_id))
+    con.execute(
+        "UPDATE contact SET email=?, linkedin=?, github=?, localisation=? WHERE user_id=?",
+        (email, linkedin, github, localisation, user_id),
+    )
     con.commit()
     con.close()

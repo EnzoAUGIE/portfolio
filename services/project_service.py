@@ -1,28 +1,48 @@
+# Tier 2 — Logique métier
+# Ce fichier gère les opérations sur les projets des utilisateurs
 from database.db import get_db
 
+
 def get_projects(user_id: int) -> list:
+    # Récupère tous les projets d'un utilisateur
     con = get_db()
-    projects = [dict(r) for r in con.execute("SELECT * FROM projects WHERE user_id=?", (user_id,)).fetchall()]
+    projects = [
+        dict(r)
+        for r in con.execute(
+            "SELECT * FROM projects WHERE user_id=?", (user_id,)
+        ).fetchall()
+    ]
     con.close()
     return projects
 
+
 def create_project(user_id: int, title: str, description: str, link: str = None):
+    # Ajoute un nouveau projet pour un utilisateur
     if link and not link.startswith(("http://", "https://")):
         link = "https://" + link
     con = get_db()
-    con.execute("INSERT INTO projects (user_id, title, description, link) VALUES (?, ?, ?, ?)",
-                (user_id, title, description, link))
+    con.execute(
+        "INSERT INTO projects (user_id, title, description, link) VALUES (?, ?, ?, ?)",
+        (user_id, title, description, link),
+    )
     con.commit()
     con.close()
 
-def update_project(project_id: int, user_id: int, title: str, description: str, link: str = None):
+
+def update_project(
+    project_id: int, user_id: int, title: str, description: str, link: str = None
+):
+    # Modifie un projet existant
     if link and not link.startswith(("http://", "https://")):
         link = "https://" + link
     con = get_db()
-    con.execute("UPDATE projects SET title=?, description=?, link=? WHERE id=? AND user_id=?",
-                (title, description, link, project_id, user_id))
+    con.execute(
+        "UPDATE projects SET title=?, description=?, link=? WHERE id=? AND user_id=?",
+        (title, description, link, project_id, user_id),
+    )
     con.commit()
     con.close()
+
 
 def delete_project(project_id: int, user_id: int):
     con = get_db()
