@@ -197,7 +197,3 @@ p[style*="red"] {
     }
 }
 
-/* Fix header visibility */
-header h1, header p {
-    color: #ffffff !important;
-}
