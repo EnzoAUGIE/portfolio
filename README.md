@@ -241,4 +241,4 @@ Stratégie de branches :
 ## Auteurs
 
 - **Enzo Augie** — Etudiant ingénieur à l'EPF, majeure Data/IA — [GitHub](https://github.com/EnzoAUGIE)
-- **Etienne Girard** — Etudiant ingénieur à l'EPF — [GitHub](https://github.com/etienneg92i)
+- **Etienne Girard** — Etudiant ingénieur à l'EPF, majeure Data/IA — [GitHub](https://github.com/etienneg92i)
