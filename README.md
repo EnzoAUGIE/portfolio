@@ -21,9 +21,22 @@ https://portfolio-21ax.onrender.com
 
 ### Côté application
 - Page d'accueil listant tous les portfolios publiés
+- Deux rôles utilisateurs : visiteur (lecture seule) et utilisateur connecté (modification de son portfolio)
 - Chaque utilisateur ne peut modifier que son propre portfolio
 - Les données sont persistées dans une base de données SQLite
 - L'application se redéploie automatiquement à chaque push sur GitHub via Render
+
+---
+
+## Versions
+
+| Version | Date | Description |
+|---|---|---|
+| v0.1.0 | Avril 2026 | Portfolio personnel avec authentification admin |
+| v0.2.0 | Juin 2026 | Ajout persistance SQLite, modification et suppression des données |
+| v1.0.0 | Juin 2026 | Générateur multi-utilisateurs, architecture 3-tiers, déploiement Render |
+
+Le détail de chaque version est disponible dans le fichier [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 
@@ -62,6 +75,7 @@ portfolio/
 ├── main.py
 ├── requirements.txt
 ├── start.sh
+├── CHANGELOG.md
 ├── routers/
 │   ├── __init__.py
 │   ├── auth.py
@@ -90,44 +104,25 @@ portfolio/
 
 ---
 
+## Rôles utilisateurs
+
+| Rôle | Accès |
+|---|---|
+| Visiteur (non connecté) | Consultation de tous les portfolios publics |
+| Utilisateur connecté | Modification de son propre portfolio uniquement |
+
+La séparation des rôles est garantie par le champ `user_id` présent dans toutes les requêtes SQL de modification. Un utilisateur connecté ne peut jamais accéder ni modifier les données d'un autre utilisateur.
+
+---
+
 ## Schéma de la base de données
 
-L'application utilise SQLite avec 5 tables liées par des clés étrangères :
-
 ```
-users
-├── id          INTEGER PRIMARY KEY AUTOINCREMENT
-├── username    TEXT UNIQUE NOT NULL
-└── password    TEXT NOT NULL (hashé en SHA-256)
-
-profile
-├── id          INTEGER PRIMARY KEY AUTOINCREMENT
-├── user_id     INTEGER UNIQUE (clé étrangère -> users.id)
-├── name        TEXT
-├── titre       TEXT
-├── bio         TEXT
-└── email       TEXT
-
-projects
-├── id          INTEGER PRIMARY KEY AUTOINCREMENT
-├── user_id     INTEGER (clé étrangère -> users.id)
-├── title       TEXT
-├── description TEXT
-└── link        TEXT
-
-skills
-├── id          INTEGER PRIMARY KEY AUTOINCREMENT
-├── user_id     INTEGER (clé étrangère -> users.id)
-├── name        TEXT
-└── level       TEXT
-
-contact
-├── id          INTEGER PRIMARY KEY AUTOINCREMENT
-├── user_id     INTEGER UNIQUE (clé étrangère -> users.id)
-├── email       TEXT
-├── linkedin    TEXT
-├── github      TEXT
-└── localisation TEXT
+users        → id, username, password (hashé SHA-256)
+profile      → id, user_id, name, titre, bio, email
+projects     → id, user_id, title, description, link
+skills       → id, user_id, name, level
+contact      → id, user_id, email, linkedin, github, localisation
 ```
 
 ---
@@ -167,7 +162,8 @@ contact
 | Simple.css | Framework CSS minimaliste |
 | Uvicorn | Serveur ASGI |
 | python-dotenv | Gestion des variables d'environnement |
-| Render | Hébergement et déploiement |
+| Git / GitHub | Versioning et collaboration |
+| Render | Hébergement et déploiement continu |
 
 ---
 
@@ -183,7 +179,6 @@ contact
 ```bash
 git clone https://github.com/EnzoAUGIE/portfolio.git
 cd portfolio
-git checkout feature/3tiers
 ```
 
 **2. Créer et activer un environnement virtuel**
@@ -197,7 +192,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**4. Lancer l'application**
+**4. Configurer les variables d'environnement**
+```bash
+cp .env.example .env
+# Renseigner ADMIN_PASSWORD dans le fichier .env
+```
+
+**5. Lancer l'application**
 ```bash
 uvicorn main:app --reload
 ```
@@ -208,28 +209,31 @@ L'application est accessible sur http://127.0.0.1:8000
 
 ## Déploiement sur Render
 
-L'application est déployée sur Render en suivant ces étapes :
+L'application est déployée sur Render avec déploiement continu :
 
 1. Créer un compte sur render.com et connecter son compte GitHub
 2. Créer un nouveau Web Service en sélectionnant le repository
-3. Choisir la branche `feature/3tiers`
+3. Choisir la branche `main`
 4. Renseigner les paramètres :
    - Build Command : `pip install -r requirements.txt`
    - Start Command : `uvicorn main:app --host 0.0.0.0 --port $PORT`
 5. Ajouter la variable d'environnement `ADMIN_PASSWORD`
 
-Render redéploie automatiquement l'application à chaque push sur la branche sélectionnée.
+Render redéploie automatiquement l'application à chaque push sur `main`.
 
 ---
 
 ## Versioning
 
-Le projet utilise Git avec la stratégie de branches suivante :
+Le projet suit la convention **Semantic Versioning** (SemVer) :
 
-- `main` : version stable de référence
-- `feature/3tiers` : version en cours de développement avec l'architecture 3-tiers et le générateur multi-utilisateurs
+- `v0.1.0` : Portfolio personnel initial
+- `v0.2.0` : Ajout de la persistance SQLite
+- `v1.0.0` : Générateur multi-utilisateurs avec architecture 3-tiers
 
-Chaque fonctionnalité majeure fait l'objet d'un commit distinct avec un message descriptif.
+Stratégie de branches :
+- `main` : version stable déployée en production
+- `feature/*` : branches de développement des nouvelles fonctionnalités
 
 ---
 
