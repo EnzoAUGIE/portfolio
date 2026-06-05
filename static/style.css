@@ -197,3 +197,11 @@ p[style*="red"] {
     }
 }
 
+
+/* Header forcé en mode sombre pour tous les utilisateurs */
+header {
+    background: #1f2937 !important;
+}
+header h1, header p, header p em, header a {
+    color: #ffffff !important;
+}
