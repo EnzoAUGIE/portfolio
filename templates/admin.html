@@ -42,8 +42,8 @@
 
     <h3>Ajouter un skill</h3>
     <form action="/skills" method="post">
-        <input name="name" placeholder="Skill" />
-        <input name="level" placeholder="beginner / intermediate / advanced" />
+        <input name="name" placeholder="Skill" required />
+        <input name="level" placeholder="beginner / intermediate / advanced" required />
         <button type="submit">Ajouter</button>
     </form>
 
@@ -63,8 +63,8 @@
 
     <h3>Ajouter un projet</h3>
     <form action="/projects" method="post">
-        <input name="title" placeholder="Titre" />
-        <input name="description" placeholder="Description" />
+        <input name="title" placeholder="Titre" required />
+        <input name="description" placeholder="Description" required />
         <input name="link" placeholder="Lien" />
         <button type="submit">Ajouter</button>
     </form>
