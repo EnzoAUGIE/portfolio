@@ -4,6 +4,7 @@ import sqlite3
 
 from fastapi import FastAPI, Request, Form, status, HTTPException, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import secrets
@@ -11,6 +12,7 @@ import secrets
 load_dotenv()
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 sessions: dict[str, bool] = {}
