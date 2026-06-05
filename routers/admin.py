@@ -5,16 +5,16 @@ from typing import Annotated
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from services.auth_service import get_current_user_id
-from services.profile_service import get_profile, update_profile
-from services.project_service import (
+from services.auth import get_current_user_id
+from services.profile import get_profile, update_profile
+from services.project import (
     get_projects,
     create_project,
     update_project,
     delete_project,
 )
-from services.skill_service import get_skills, create_skill, update_skill, delete_skill
-from services.contact_service import get_contact, update_contact
+from services.skill import get_skills, create_skill, update_skill, delete_skill
+from services.contact import get_contact, update_contact
 from database.db import get_db
 
 router = APIRouter()

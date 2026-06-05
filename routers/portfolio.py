@@ -4,11 +4,11 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from services.auth_service import get_all_users, get_current_user_id
-from services.profile_service import get_profile
-from services.project_service import get_projects
-from services.skill_service import get_skills
-from services.contact_service import get_contact
+from services.auth import get_all_users, get_current_user_id
+from services.profile import get_profile
+from services.project import get_projects
+from services.skill import get_skills
+from services.contact import get_contact
 from database.db import get_db
 
 router = APIRouter()

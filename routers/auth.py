@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from services.auth_service import create_user, login_user, logout_user
+from services.auth import create_user, login_user, logout_user
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
