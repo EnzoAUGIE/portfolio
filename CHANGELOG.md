@@ -4,6 +4,20 @@ Toutes les modifications notables de ce projet sont documentées dans ce fichier
 
 ---
 
+## [v1.0.1] - 2026-06-05
+
+### Modifications
+- Renommage des fichiers services (suppression du suffixe _service)
+  - `auth_service.py` → `auth.py`
+  - `profile_service.py` → `profile.py`
+  - `project_service.py` → `project.py`
+  - `skill_service.py` → `skill.py`
+  - `contact_service.py` → `contact.py`
+- Ajout de commentaires dans tous les scripts Python
+- Mise à jour du README avec versioning et rôles utilisateurs
+
+---
+
 ## [v1.0.0] - 2026-06-05
 
 ### Ajouts majeurs

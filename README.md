@@ -35,6 +35,7 @@ https://portfolio-21ax.onrender.com
 | v0.1.0 | Avril 2026 | Portfolio personnel avec authentification admin |
 | v0.2.0 | Juin 2026 | Ajout persistance SQLite, modification et suppression des données |
 | v1.0.0 | Juin 2026 | Générateur multi-utilisateurs, architecture 3-tiers, déploiement Render |
+| v1.0.1 | Juin 2026 | Renommage des services, commentaires dans le code |
 
 Le détail de chaque version est disponible dans le fichier [CHANGELOG.md](./CHANGELOG.md).
 
@@ -54,11 +55,11 @@ Ce niveau gère la réception des requêtes HTTP et le retour des réponses (pag
 ### Tier 2 — Logique métier (services/)
 Ce niveau contient toutes les règles et opérations de l'application. Il fait le lien entre les routers et la base de données, sans jamais interagir directement avec les requêtes HTTP.
 
-- `services/auth_service.py` : création de compte, vérification des identifiants, gestion des sessions
-- `services/profile_service.py` : lecture et mise à jour du profil utilisateur
-- `services/project_service.py` : création, modification et suppression de projets
-- `services/skill_service.py` : création, modification et suppression de compétences
-- `services/contact_service.py` : lecture et mise à jour des informations de contact
+- `services/auth.py` : création de compte, vérification des identifiants, gestion des sessions
+- `services/profile.py` : lecture et mise à jour du profil utilisateur
+- `services/project.py` : création, modification et suppression de projets
+- `services/skill.py` : création, modification et suppression de compétences
+- `services/contact.py` : lecture et mise à jour des informations de contact
 
 ### Tier 3 — Données (database/)
 Ce niveau gère uniquement la connexion à la base de données et l'initialisation des tables. Il ne connaît ni les routes ni la logique métier.
@@ -83,11 +84,11 @@ portfolio/
 │   └── admin.py
 ├── services/
 │   ├── __init__.py
-│   ├── auth_service.py
-│   ├── profile_service.py
-│   ├── project_service.py
-│   ├── skill_service.py
-│   └── contact_service.py
+│   ├── auth.py
+│   ├── profile.py
+│   ├── project.py
+│   ├── skill.py
+│   └── contact.py
 ├── database/
 │   ├── __init__.py
 │   ├── db.py
@@ -192,10 +193,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**4. Configurer les variables d'environnement**
+**4. Créer le fichier .env**
 ```bash
-cp .env.example .env
-# Renseigner ADMIN_PASSWORD dans le fichier .env
+echo "ADMIN_PASSWORD=votre_mot_de_passe" > .env
 ```
 
 **5. Lancer l'application**
@@ -225,11 +225,12 @@ Render redéploie automatiquement l'application à chaque push sur `main`.
 
 ## Versioning
 
-Le projet suit la convention **Semantic Versioning** (SemVer) :
+Le projet suit la convention Semantic Versioning (SemVer) :
 
 - `v0.1.0` : Portfolio personnel initial
 - `v0.2.0` : Ajout de la persistance SQLite
 - `v1.0.0` : Générateur multi-utilisateurs avec architecture 3-tiers
+- `v1.0.1` : Renommage des services et documentation
 
 Stratégie de branches :
 - `main` : version stable déployée en production
