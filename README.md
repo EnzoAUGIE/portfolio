@@ -1,72 +1,239 @@
-# Portfolio Web — Enzo Augie
+# Portfolio Generator
 
-Portfolio personnel développé avec **FastAPI** et **Jinja2**, avec un panneau d'administration pour gérer le contenu dynamiquement.
+Portfolio Generator est une application web permettant à n'importe quel utilisateur de créer, personnaliser et publier son propre portfolio en ligne. Développée avec FastAPI et Jinja2, elle repose sur une architecture 3-tiers claire et une base de données SQLite pour la persistance des données.
+
+## Démonstration en ligne
+
+L'application est accessible à l'adresse suivante :
+https://portfolio-21ax.onrender.com
 
 ## Fonctionnalités
 
-- Page portfolio publique (profil, skills, projets, contact)
-- Authentification admin par mot de passe
--️ Panneau admin pour :
-  - Modifier le profil et les infos de contact
-  - Ajouter, modifier et supprimer des skills
-  - Ajouter, modifier et supprimer des projets
-- Persistance des données via **SQLite**
+### Côté utilisateur
+- Création d'un compte avec nom d'utilisateur et mot de passe
+- Connexion et déconnexion sécurisées via cookie de session
+- Portfolio accessible publiquement via une URL personnalisée : `/portfolio/{username}`
+- Panneau d'administration personnel permettant de :
+  - Modifier son profil (nom complet, titre, biographie)
+  - Gérer ses compétences (ajout, modification, suppression)
+  - Gérer ses projets (ajout, modification, suppression, lien vers le projet)
+  - Renseigner ses informations de contact (email, LinkedIn, GitHub, localisation)
 
-##️ Technologies
+### Côté application
+- Page d'accueil listant tous les portfolios publiés
+- Chaque utilisateur ne peut modifier que son propre portfolio
+- Les données sont persistées dans une base de données SQLite
+- L'application se redéploie automatiquement à chaque push sur GitHub via Render
 
-- [FastAPI](https://fastapi.tiangolo.com/) — Backend Python
-- [Jinja2](https://jinja.palletsprojects.com/) — Templates HTML
-- [SQLite](https://www.sqlite.org/) — Base de données locale
-- [Simple.css](https://simplecss.org/) — Style CSS minimaliste
+---
 
-## Lancer le projet
+## Architecture 3-tiers
 
-### 1. Cloner le repo
+L'application est structurée selon une architecture 3-tiers qui sépare clairement les responsabilités :
 
-```bash
-git clone https://github.com/EnzoAUGIE/portfolio.git
-cd portfolio
-```
+### Tier 1 — Présentation (routers/)
+Ce niveau gère la réception des requêtes HTTP et le retour des réponses (pages HTML ou redirections). Il ne contient aucune logique métier.
 
-### 2. Créer un environnement virtuel et installer les dépendances
+- `routers/auth.py` : gestion des routes d'inscription, connexion et déconnexion
+- `routers/portfolio.py` : affichage de la page d'accueil et des portfolios publics
+- `routers/admin.py` : gestion du panneau d'administration de chaque utilisateur
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install fastapi uvicorn jinja2 python-dotenv
-```
+### Tier 2 — Logique métier (services/)
+Ce niveau contient toutes les règles et opérations de l'application. Il fait le lien entre les routers et la base de données, sans jamais interagir directement avec les requêtes HTTP.
 
-### 3. Configurer le mot de passe admin
+- `services/auth_service.py` : création de compte, vérification des identifiants, gestion des sessions
+- `services/profile_service.py` : lecture et mise à jour du profil utilisateur
+- `services/project_service.py` : création, modification et suppression de projets
+- `services/skill_service.py` : création, modification et suppression de compétences
+- `services/contact_service.py` : lecture et mise à jour des informations de contact
 
-Crée un fichier `.env` à la racine :
+### Tier 3 — Données (database/)
+Ce niveau gère uniquement la connexion à la base de données et l'initialisation des tables. Il ne connaît ni les routes ni la logique métier.
 
-```
-ADMIN_PASSWORD=ton_mot_de_passe
-```
+- `database/db.py` : connexion SQLite
+- `database/init_db.py` : création des tables au démarrage de l'application
 
-### 4. Lancer l'application
-
-```bash
-uvicorn main:app --reload
-```
-
-Puis ouvre [http://127.0.0.1:8000](http://127.0.0.1:8000) dans ton navigateur.
+---
 
 ## Structure du projet
 
 ```
 portfolio/
-├── main.py          # Backend FastAPI
+├── main.py
+├── requirements.txt
+├── start.sh
+├── routers/
+│   ├── __init__.py
+│   ├── auth.py
+│   ├── portfolio.py
+│   └── admin.py
+├── services/
+│   ├── __init__.py
+│   ├── auth_service.py
+│   ├── profile_service.py
+│   ├── project_service.py
+│   ├── skill_service.py
+│   └── contact_service.py
+├── database/
+│   ├── __init__.py
+│   ├── db.py
+│   └── init_db.py
 ├── templates/
-│   ├── index.html   # Page portfolio publique
-│   ├── admin.html   # Panneau d'administration
-│   └── login.html   # Page de connexion
-├── .env             # Mot de passe admin (non commité)
-├── .gitignore
-└── README.md
+│   ├── home.html
+│   ├── index.html
+│   ├── admin.html
+│   ├── login.html
+│   └── register.html
+└── static/
+    └── style.css
 ```
 
-## 👤 Auteur
+---
 
-**Enzo Augie** — Étudiant ingénieur à l'EPF, majeure Data/IA  
-[GitHub](https://github.com/EnzoAUGIE) · [LinkedIn](https://fr.linkedin.com/in/enzo-augie)
+## Schéma de la base de données
+
+L'application utilise SQLite avec 5 tables liées par des clés étrangères :
+
+```
+users
+├── id          INTEGER PRIMARY KEY AUTOINCREMENT
+├── username    TEXT UNIQUE NOT NULL
+└── password    TEXT NOT NULL (hashé en SHA-256)
+
+profile
+├── id          INTEGER PRIMARY KEY AUTOINCREMENT
+├── user_id     INTEGER UNIQUE (clé étrangère -> users.id)
+├── name        TEXT
+├── titre       TEXT
+├── bio         TEXT
+└── email       TEXT
+
+projects
+├── id          INTEGER PRIMARY KEY AUTOINCREMENT
+├── user_id     INTEGER (clé étrangère -> users.id)
+├── title       TEXT
+├── description TEXT
+└── link        TEXT
+
+skills
+├── id          INTEGER PRIMARY KEY AUTOINCREMENT
+├── user_id     INTEGER (clé étrangère -> users.id)
+├── name        TEXT
+└── level       TEXT
+
+contact
+├── id          INTEGER PRIMARY KEY AUTOINCREMENT
+├── user_id     INTEGER UNIQUE (clé étrangère -> users.id)
+├── email       TEXT
+├── linkedin    TEXT
+├── github      TEXT
+└── localisation TEXT
+```
+
+---
+
+## Endpoints de l'application
+
+| Méthode | Route | Accès | Description |
+|---|---|---|---|
+| GET | `/` | Public | Page d'accueil avec la liste des portfolios |
+| GET | `/register` | Public | Formulaire d'inscription |
+| POST | `/register` | Public | Création d'un compte |
+| GET | `/login` | Public | Formulaire de connexion |
+| POST | `/login` | Public | Authentification |
+| GET | `/logout` | Connecté | Déconnexion |
+| GET | `/portfolio/{username}` | Public | Portfolio public d'un utilisateur |
+| GET | `/dashboard` | Connecté | Redirige vers son propre portfolio |
+| GET | `/admin` | Connecté | Panneau d'administration |
+| POST | `/profile` | Connecté | Modifier son profil |
+| POST | `/contact` | Connecté | Modifier ses infos de contact |
+| POST | `/skills` | Connecté | Ajouter une compétence |
+| POST | `/skills/{id}/edit` | Connecté | Modifier une compétence |
+| POST | `/skills/{id}/delete` | Connecté | Supprimer une compétence |
+| POST | `/projects` | Connecté | Ajouter un projet |
+| POST | `/projects/{id}/edit` | Connecté | Modifier un projet |
+| POST | `/projects/{id}/delete` | Connecté | Supprimer un projet |
+
+---
+
+## Technologies utilisées
+
+| Technologie | Rôle |
+|---|---|
+| Python 3.11 | Langage principal |
+| FastAPI | Framework web backend |
+| Jinja2 | Moteur de templates HTML |
+| SQLite | Base de données locale |
+| Simple.css | Framework CSS minimaliste |
+| Uvicorn | Serveur ASGI |
+| python-dotenv | Gestion des variables d'environnement |
+| Render | Hébergement et déploiement |
+
+---
+
+## Installation et lancement en local
+
+### Prérequis
+- Python 3.11 ou supérieur
+- Git
+
+### Étapes
+
+**1. Cloner le repository**
+```bash
+git clone https://github.com/EnzoAUGIE/portfolio.git
+cd portfolio
+git checkout feature/3tiers
+```
+
+**2. Créer et activer un environnement virtuel**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**3. Installer les dépendances**
+```bash
+pip install -r requirements.txt
+```
+
+**4. Lancer l'application**
+```bash
+uvicorn main:app --reload
+```
+
+L'application est accessible sur http://127.0.0.1:8000
+
+---
+
+## Déploiement sur Render
+
+L'application est déployée sur Render en suivant ces étapes :
+
+1. Créer un compte sur render.com et connecter son compte GitHub
+2. Créer un nouveau Web Service en sélectionnant le repository
+3. Choisir la branche `feature/3tiers`
+4. Renseigner les paramètres :
+   - Build Command : `pip install -r requirements.txt`
+   - Start Command : `uvicorn main:app --host 0.0.0.0 --port $PORT`
+5. Ajouter la variable d'environnement `ADMIN_PASSWORD`
+
+Render redéploie automatiquement l'application à chaque push sur la branche sélectionnée.
+
+---
+
+## Versioning
+
+Le projet utilise Git avec la stratégie de branches suivante :
+
+- `main` : version stable de référence
+- `feature/3tiers` : version en cours de développement avec l'architecture 3-tiers et le générateur multi-utilisateurs
+
+Chaque fonctionnalité majeure fait l'objet d'un commit distinct avec un message descriptif.
+
+---
+
+## Auteurs
+
+- **Enzo Augie** — Etudiant ingénieur à l'EPF, majeure Data/IA — [GitHub](https://github.com/EnzoAUGIE)
+- **Etienne Girard** — Etudiant ingénieur à l'EPF — [GitHub](https://github.com/etienneg92i)
