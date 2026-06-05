@@ -7,7 +7,7 @@
 
 <body>
     <header>
-        <h1>⚙️ Admin Panel</h1>
+        <h1> Admin Panel</h1>
     </header>
 
     <h2>Profile</h2>
@@ -31,12 +31,12 @@
     {% for skill in skills %}
     <form action="/skills/{{skill.id}}/delete" method="post" style="display:inline">
         <strong>{{skill.name}}</strong> — {{skill.level}}
-        <button type="submit">🗑 Supprimer</button>
+        <button type="submit"> Supprimer</button>
     </form>
     <form action="/skills/{{skill.id}}/edit" method="post" style="display:inline">
         <input name="name" value="{{skill.name}}" />
         <input name="level" value="{{skill.level}}" />
-        <button type="submit">✏️ Modifier</button>
+        <button type="submit"> Modifier</button>
     </form>
     <br />
     {% endfor %}
@@ -52,13 +52,13 @@
     {% for project in projects %}
     <form action="/projects/{{project.id}}/delete" method="post" style="display:inline">
         <strong>{{project.title}}</strong>
-        <button type="submit">🗑 Supprimer</button>
+        <button type="submit"> Supprimer</button>
     </form>
     <form action="/projects/{{project.id}}/edit" method="post" style="display:inline">
         <input name="title" value="{{project.title}}" />
         <input name="description" value="{{project.description}}" />
         <input name="link" value="{{project.link}}" />
-        <button type="submit">✏️ Modifier</button>
+        <button type="submit"> Modifier</button>
     </form>
     <br />
     {% endfor %}
@@ -72,8 +72,8 @@
     </form>
 
     <footer>
-        <a href="/">← Retour au portfolio</a>
-        <a href="/logout">🚪 Se déconnecter</a>
+        <a href="/"> Retour au portfolio</a>
+        <a href="/logout"> Se déconnecter</a>
     </footer>
 </body>
 

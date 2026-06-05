@@ -12,14 +12,14 @@
         <p>{{profile.bio}}</p>
     </header>
 
-    <h2>🧠 Skills</h2>
+    <h2> Skills</h2>
     <ul>
         {% for skill in skills %}
         <li>{{skill.name}} — {{skill.level}}</li>
         {% endfor %}
     </ul>
 
-    <h2>📁 Projects</h2>
+    <h2> Projects</h2>
     <ul>
         {% for project in projects %}
         <li>
@@ -32,28 +32,28 @@
         {% endfor %}
     </ul>
 
-    <h2>📬 Contact</h2>
+    <h2> Contact</h2>
     <ul>
         {% if contact.email %}
-        <li>📧 <a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
+        <li> <a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
         {% endif %}
         {% if contact.linkedin %}
-        <li>💼 <a href="{{contact.linkedin}}" target="_blank">LinkedIn</a></li>
+        <li> <a href="{{contact.linkedin}}" target="_blank">LinkedIn</a></li>
         {% endif %}
         {% if contact.github %}
-        <li>🐙 <a href="{{contact.github}}" target="_blank">GitHub</a></li>
+        <li> <a href="{{contact.github}}" target="_blank">GitHub</a></li>
         {% endif %}
         {% if contact.localisation %}
-        <li>📍 {{contact.localisation}}</li>
+        <li> {{contact.localisation}}</li>
         {% endif %}
     </ul>
 
     <footer>
         {% if admin %}
-        <a href="/admin">⚙️ Admin panel</a>
-        <a href="/logout">🚪 Se déconnecter</a>
+        <a href="/admin"> Admin panel</a>
+        <a href="/logout"> Se déconnecter</a>
         {% else %}
-        <a href="/login">🔐 Accès admin</a>
+        <a href="/login"> Accès admin</a>
         {% endif %}
     </footer>
 </body>
